@@ -1,0 +1,24 @@
+name: AVS MCS Suite Build
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - release/*
+
+jobs:
+  complete_tests:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        rust:
+          - stable
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: cargo build --verbose
+    - name: Linter
+      run: cargo clippy --all-targets --all-features --verbose -- -D warnings
+    - name: Unit and Integration Tests
+      run: cargo test --verbose
