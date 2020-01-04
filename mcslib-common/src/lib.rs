@@ -1,8 +1,11 @@
+pub extern crate chrono;
 pub extern crate env_logger;
 pub extern crate log;
 
 pub use log::{debug, error, info, trace, warn};
+pub use uuid::Uuid;
 
+use chrono::Utc;
 use env_logger::builder as log_builder;
 use std::env::set_var as set_env_var;
 
@@ -21,4 +24,24 @@ pub fn init_log(debug_mode: bool) {
         .format_timestamp_nanos()
         .format_indent(Some(4))
         .init();
+}
+
+pub fn get_new_uuidv4() -> Uuid {
+    Uuid::new_v4()
+}
+
+pub fn get_timestamp_nanos() -> i64 {
+    Utc::now().timestamp_nanos()
+}
+
+pub fn get_timestamp_millis() -> i64 {
+    Utc::now().timestamp_millis()
+}
+
+pub fn get_timestamp() -> i64 {
+    Utc::now().timestamp()
+}
+
+pub fn get_rfc3339_now() -> String {
+    Utc::now().to_rfc3339()
 }
