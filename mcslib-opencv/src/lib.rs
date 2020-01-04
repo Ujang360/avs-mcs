@@ -36,8 +36,7 @@ pub fn init_globals() {
 
             for row in 0..3 {
                 for col in 0..3 {
-                    *camera_matrix.at_2d_mut(row, col).unwrap() =
-                        CAMERA_MATRIX_ARRAY[row as usize][col as usize];
+                    *camera_matrix.at_2d_mut(row, col).unwrap() = CAMERA_MATRIX_ARRAY[row as usize][col as usize];
                 }
             }
 

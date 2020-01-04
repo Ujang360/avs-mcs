@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
-use serde_json::{
-    from_str as from_string, to_string, to_string_pretty as to_json, Error as JsonError,
-};
+use serde_json::{from_str as from_string, to_string, to_string_pretty as to_json, Error as JsonError};
 use std::fmt::{Display, Formatter, Result as FormatterResult};
 use std::net::SocketAddrV4;
 
@@ -137,11 +135,7 @@ impl Default for SafePoint2D {
 
 impl Default for SafePoint3D {
     fn default() -> SafePoint3D {
-        SafePoint3D {
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-        }
+        SafePoint3D { x: 0.0, y: 0.0, z: 0.0 }
     }
 }
 

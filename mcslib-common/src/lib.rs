@@ -1,6 +1,6 @@
 mod types;
 
 pub use types::{
-    BaseStations, BaseStationsConfig, JsonSerializable, SafeEulerAngles, SafePoint2D, SafePoint3D,
-    TrackerEndpoint, TrackersConfig,
+    BaseStations, BaseStationsConfig, JsonSerializable, SafeEulerAngles, SafePoint2D, SafePoint3D, TrackerEndpoint,
+    TrackersConfig,
 };
