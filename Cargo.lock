@@ -284,6 +284,10 @@ name = "mcslib-protocol"
 version = "0.1.0"
 
 [[package]]
+name = "mcslib-tcp"
+version = "0.1.0"
+
+[[package]]
 name = "mcslib-udp"
 version = "0.1.0"
 

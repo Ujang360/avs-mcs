@@ -1,5 +1,12 @@
 [workspace]
-members = ["mcslib-common", "mcslib-opencv", "mcslib-protocol", "mcslib-udp", "mcsapp-motion-tracker"]
+members = [
+    "mcsapp-motion-tracker",
+    "mcslib-common",
+    "mcslib-opencv",
+    "mcslib-protocol",
+    "mcslib-udp",
+    "mcslib-tcp",
+]
 
 [profile.dev]
 opt-level = 0
