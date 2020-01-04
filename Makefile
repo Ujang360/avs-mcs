@@ -50,4 +50,4 @@ test: build
 
 update:
 	@$(CARGO) update
-	@$(CARGO) upgrade
+	@$(CARGO) upgrade --all
