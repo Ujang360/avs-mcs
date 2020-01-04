@@ -1,5 +1,5 @@
 use crate::{get_camera_matrix, get_distortion_coefficients, get_object_points};
-use mcslib_common::SafePoint2D;
+use mcslib_common::types::SafePoint2D;
 use opencv::calib3d::{rodrigues, solve_pnp};
 use opencv::core::{no_array, DataType, Mat, Point2d, _OutputArrayTrait};
 use opencv::prelude::Vector;
