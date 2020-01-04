@@ -3,7 +3,6 @@ name = "mcslib-opencv"
 version = "3.4.9"  # match the OpenCV version used
 authors = ["Aditya Kresna <aditya.kresna@outlook.co.id>"]
 edition = "2018"
-build = "build.rs"
 
 [dependencies]
 once_cell = "1.2.0"

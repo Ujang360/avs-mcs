@@ -15,10 +15,14 @@ jobs:
         rust:
           - stable
     steps:
-    - uses: actions/checkout@v1
-    - name: Build
-      run: cargo build --verbose
-    - name: Linter
-      run: cargo clippy --all-targets --all-features --verbose -- -D warnings
-    - name: Unit and Integration Tests
-      run: cargo test --verbose
+      - uses: actions/checkout@v1
+      - name: OpenCV Build
+        run: |
+          cd mcslib-opencv
+          ./check-opencv.sh
+      - name: Build
+        run: cargo build --verbose
+      - name: Linter
+        run: cargo clippy --all-targets --all-features --verbose -- -D warnings
+      - name: Unit and Integration Tests
+        run: cargo test --verbose
