@@ -16,13 +16,13 @@ jobs:
           - stable
     steps:
       - uses: actions/checkout@v1
+      - name: Pre-requisites (Make)
+        run: sudo apt-get install make
       - name: OpenCV Build
-        run: |
-          cd mcslib-opencv
-          ./check-opencv.sh
+        run: make prepare
       - name: Build
-        run: cargo build --verbose
+        run: make build
       - name: Linter
-        run: cargo clippy --all-targets --all-features --verbose -- -D warnings
+        run: make lint
       - name: Unit and Integration Tests
-        run: cargo test --verbose
+        run: make test
