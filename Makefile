@@ -14,10 +14,11 @@ bench: prepare
 build: prepare
 	@$(CARGO) build
 
-release:
+release: prepare
 	@$(CARGO) build --release
 	mkdir -p build
 	cp target/release/mcsapp-motion-tracker build/
+	strip build/mcsapp-motion-tracker
 
 check: prepare
 	@$(CARGO) check
