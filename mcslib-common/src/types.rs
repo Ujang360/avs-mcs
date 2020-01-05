@@ -149,7 +149,7 @@ pub struct TrackerEndpoint {
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
-pub struct TrackersConfig(Vec<TrackerEndpoint>);
+pub struct TrackersConfig(pub Vec<TrackerEndpoint>);
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct TrackersServerConfig {
