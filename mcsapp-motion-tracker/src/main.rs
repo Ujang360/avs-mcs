@@ -9,7 +9,7 @@ mod networks;
 use mcslib_common::config::{init_configs, load_configs};
 use mcslib_common::init_log;
 use std::io::Result as IOResult;
-use std::panic::{set_hook, PanicInfo};
+use std::panic::set_hook;
 
 const STATIONS_CONFIG_PATH: &str = "base-stations.config";
 const TRACKERS_CONFIG_PATH: &str = "motion-trackers.config";
