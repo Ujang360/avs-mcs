@@ -1,7 +1,0 @@
-[package]
-name = "mcslib-udp"
-version = "0.1.0"
-authors = ["Aditya Kresna <aditya.kresna@outlook.co.id>"]
-edition = "2018"
-
-[dependencies]

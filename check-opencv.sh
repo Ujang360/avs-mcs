@@ -6,7 +6,6 @@ OPENCV_CONTRIB="NO"
 pkg-config --exists opencv
 
 if [ $? -eq 0 ]; then
-    installed_version=
     echo "OpenCV already installed [v$(pkg-config --modversion opencv)]"
     exit 0
 else

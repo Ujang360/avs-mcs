@@ -1,6 +1,7 @@
 pub extern crate chrono;
 pub extern crate env_logger;
 pub extern crate log;
+pub extern crate serialport;
 
 pub use log::{debug, error, info, trace, warn};
 pub use uuid::Uuid;

@@ -6,7 +6,8 @@ CARGO = cargo --color $(COLOR) --verbose
 all: release
 
 prepare:
-	mcslib-opencv/./check-opencv.sh
+	./check-libudev.sh
+	./check-opencv.sh
 
 bench: prepare
 	@$(CARGO) bench

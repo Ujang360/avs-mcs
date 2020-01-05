@@ -4,8 +4,6 @@ members = [
     "mcslib-common",
     "mcslib-opencv",
     "mcslib-protocol",
-    "mcslib-udp",
-    "mcslib-tcp",
 ]
 
 [profile.dev]

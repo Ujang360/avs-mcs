@@ -1,3 +1,4 @@
+use crate::serialport::SerialPortSettings;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str as from_string, to_string, to_string_pretty as to_json, Error as JsonError};
 use std::fmt::{Display, Formatter, Result as FormatterResult};
@@ -20,6 +21,13 @@ where
     fn to_string(&self) -> String {
         to_string(self).expect(JSON_MAPPING_ERROR_MESSAGE)
     }
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub enum ServerType {
+    Serial(SerialPortSettings),
+    UDP(SocketAddrV4),
+    TCP(SocketAddrV4),
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
@@ -77,6 +85,14 @@ pub struct TrackerEndpoint {
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct TrackersConfig(Vec<TrackerEndpoint>);
 
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct TrackersIGServerConfig {
+    #[serde(rename = "ServerName")]
+    pub name: String,
+    #[serde(rename = "ServerType")]
+    pub server_type: ServerType,
+}
+
 impl JsonSerializable<'_> for SafePoint2D {}
 impl JsonSerializable<'_> for SafePoint3D {}
 impl JsonSerializable<'_> for SafeEulerAngles {}
@@ -84,6 +100,7 @@ impl JsonSerializable<'_> for BaseStations {}
 impl JsonSerializable<'_> for BaseStationsConfig {}
 impl JsonSerializable<'_> for TrackerEndpoint {}
 impl JsonSerializable<'_> for TrackersConfig {}
+impl JsonSerializable<'_> for TrackersIGServerConfig {}
 
 impl Display for SafePoint2D {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
@@ -122,6 +139,12 @@ impl Display for TrackerEndpoint {
 }
 
 impl Display for TrackersConfig {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
+        write!(formatter, "{}", self.to_json())
+    }
+}
+
+impl Display for TrackersIGServerConfig {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
         write!(formatter, "{}", self.to_json())
     }
@@ -179,5 +202,14 @@ impl Default for TrackerEndpoint {
 impl Default for TrackersConfig {
     fn default() -> TrackersConfig {
         TrackersConfig(vec![TrackerEndpoint::default()])
+    }
+}
+
+impl Default for TrackersIGServerConfig {
+    fn default() -> TrackersIGServerConfig {
+        TrackersIGServerConfig {
+            name: "",
+            server_type: ServerType::TCP("127.0.0.1:4000".into()),
+        }
     }
 }
