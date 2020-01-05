@@ -90,6 +90,13 @@ pub enum ServerType {
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
+pub enum TrackerCommunication {
+    SerialPort(SerialPortSettings),
+    UDP(SocketAddrV4),
+    TCP(SocketAddrV4),
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct SafePoint2D {
     #[serde(rename = "X")]
     pub x: f64,
@@ -137,8 +144,8 @@ pub struct BaseStationsConfig {
 pub struct TrackerEndpoint {
     #[serde(rename = "TrackerName")]
     pub tracker_name: String,
-    #[serde(rename = "Endpoint")]
-    pub endpoint: SocketAddrV4,
+    #[serde(rename = "TrackerCommunication")]
+    pub tracker_communication: TrackerCommunication,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
@@ -150,8 +157,6 @@ pub struct TrackersServerConfig {
     pub name: String,
     #[serde(rename = "IGServerType")]
     pub ig_server_type: ServerType,
-    #[serde(rename = "IOServerType")]
-    pub io_server_type: ServerType,
 }
 
 impl Into<SPDataBits> for DataBits {
@@ -222,6 +227,7 @@ impl JsonSerializable<'_> for SafePoint3D {}
 impl JsonSerializable<'_> for SafeEulerAngles {}
 impl JsonSerializable<'_> for BaseStations {}
 impl JsonSerializable<'_> for BaseStationsConfig {}
+impl JsonSerializable<'_> for TrackerCommunication {}
 impl JsonSerializable<'_> for TrackerEndpoint {}
 impl JsonSerializable<'_> for TrackersConfig {}
 impl JsonSerializable<'_> for TrackersServerConfig {}
@@ -298,6 +304,12 @@ impl Display for BaseStationsConfig {
     }
 }
 
+impl Display for TrackerCommunication {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
+        write!(formatter, "{}", self.to_json())
+    }
+}
+
 impl Display for TrackerEndpoint {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
         write!(formatter, "{}", self.to_json())
@@ -362,7 +374,7 @@ impl Default for SerialPortSettings {
 
 impl Default for ServerType {
     fn default() -> ServerType {
-        ServerType::SerialPort(vec![Default::default()])
+        ServerType::TCP("127.0.0.1:4000".parse().unwrap())
     }
 }
 
@@ -406,11 +418,17 @@ impl Default for BaseStationsConfig {
     }
 }
 
+impl Default for TrackerCommunication {
+    fn default() -> TrackerCommunication {
+        TrackerCommunication::UDP("127.0.0.1:5000".parse().unwrap())
+    }
+}
+
 impl Default for TrackerEndpoint {
     fn default() -> TrackerEndpoint {
         TrackerEndpoint {
-            tracker_name: "".into(),
-            endpoint: "127.0.0.1:5000".parse().unwrap(),
+            tracker_name: Default::default(),
+            tracker_communication: Default::default(),
         }
     }
 }
@@ -425,8 +443,7 @@ impl Default for TrackersServerConfig {
     fn default() -> TrackersServerConfig {
         TrackersServerConfig {
             name: "Motion Tracker Server".into(),
-            ig_server_type: ServerType::TCP("127.0.0.1:4000".parse().unwrap()),
-            io_server_type: Default::default(),
+            ig_server_type: Default::default(),
         }
     }
 }

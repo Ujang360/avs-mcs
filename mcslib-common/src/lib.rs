@@ -1,3 +1,4 @@
+pub extern crate bytes;
 pub extern crate chrono;
 pub extern crate env_logger;
 pub extern crate log;
