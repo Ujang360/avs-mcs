@@ -5,4 +5,6 @@ authors = ["Aditya Kresna <aditya.kresna@outlook.co.id>"]
 edition = "2018"
 
 [dependencies]
+mcslib-common = { path = "../mcslib-common"}
+mcslib-opencv = { path = "../mcslib-opencv"}
 mimalloc = { version = "0.1.11", default-features = false }

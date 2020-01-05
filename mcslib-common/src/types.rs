@@ -4,6 +4,7 @@ use crate::serialport::{
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str as from_string, to_string, to_string_pretty as to_json, Error as JsonError};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::fmt::{Display, Formatter, Result as FormatterResult};
 use std::net::SocketAddrV4;
 use std::time::Duration;
@@ -30,7 +31,7 @@ where
 }
 
 #[repr(u32)]
-#[derive(Deserialize, Serialize, Clone, Debug, Copy)]
+#[derive(Deserialize_repr, Serialize_repr, Clone, Debug, Copy)]
 pub enum Baud {
     B4800 = 4_800,
     B9600 = 9_600,
@@ -41,7 +42,7 @@ pub enum Baud {
 }
 
 #[repr(u8)]
-#[derive(Deserialize, Serialize, Clone, Debug, Copy)]
+#[derive(Deserialize_repr, Serialize_repr, Clone, Debug, Copy)]
 pub enum DataBits {
     Five = 5,
     Six = 6,
@@ -64,7 +65,7 @@ pub enum Parity {
 }
 
 #[repr(u8)]
-#[derive(Deserialize, Serialize, Clone, Debug, Copy)]
+#[derive(Deserialize_repr, Serialize_repr, Clone, Debug, Copy)]
 pub enum StopBits {
     One = 1,
     Two = 2,
@@ -83,7 +84,7 @@ pub struct SerialPortSettings {
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub enum ServerType {
-    SerialPort(SerialPortSettings),
+    SerialPort(Vec<SerialPortSettings>),
     UDP(SocketAddrV4),
     TCP(SocketAddrV4),
 }
@@ -144,11 +145,13 @@ pub struct TrackerEndpoint {
 pub struct TrackersConfig(Vec<TrackerEndpoint>);
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
-pub struct TrackersIGServerConfig {
+pub struct TrackersServerConfig {
     #[serde(rename = "ServerName")]
     pub name: String,
-    #[serde(rename = "ServerType")]
-    pub server_type: ServerType,
+    #[serde(rename = "IGServerType")]
+    pub ig_server_type: ServerType,
+    #[serde(rename = "IOServerType")]
+    pub io_server_type: ServerType,
 }
 
 impl Into<SPDataBits> for DataBits {
@@ -221,7 +224,7 @@ impl JsonSerializable<'_> for BaseStations {}
 impl JsonSerializable<'_> for BaseStationsConfig {}
 impl JsonSerializable<'_> for TrackerEndpoint {}
 impl JsonSerializable<'_> for TrackersConfig {}
-impl JsonSerializable<'_> for TrackersIGServerConfig {}
+impl JsonSerializable<'_> for TrackersServerConfig {}
 
 impl Display for Baud {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
@@ -307,7 +310,7 @@ impl Display for TrackersConfig {
     }
 }
 
-impl Display for TrackersIGServerConfig {
+impl Display for TrackersServerConfig {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
         write!(formatter, "{}", self.to_json())
     }
@@ -359,7 +362,7 @@ impl Default for SerialPortSettings {
 
 impl Default for ServerType {
     fn default() -> ServerType {
-        ServerType::SerialPort(Default::default())
+        ServerType::SerialPort(vec![Default::default()])
     }
 }
 
@@ -418,11 +421,12 @@ impl Default for TrackersConfig {
     }
 }
 
-impl Default for TrackersIGServerConfig {
-    fn default() -> TrackersIGServerConfig {
-        TrackersIGServerConfig {
-            name: "".into(),
-            server_type: ServerType::TCP("127.0.0.1:4000".parse().unwrap()),
+impl Default for TrackersServerConfig {
+    fn default() -> TrackersServerConfig {
+        TrackersServerConfig {
+            name: "Motion Tracker Server".into(),
+            ig_server_type: ServerType::TCP("127.0.0.1:4000".parse().unwrap()),
+            io_server_type: Default::default(),
         }
     }
 }

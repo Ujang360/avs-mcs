@@ -1,93 +1,67 @@
-use crate::types::{BaseStationsConfig, JsonSerializable, TrackersConfig};
+use crate::types::{BaseStationsConfig, JsonSerializable, TrackersConfig, TrackersServerConfig};
 use std::fs::{read_to_string, write};
 use std::io::{Error as IOError, ErrorKind as IOErrorKind, Result as IOResult};
 use std::path::Path;
 
-pub fn init_default_stations_config(config_path: &str) -> IOResult<()> {
-    let path = Path::new(config_path);
-    let config_exist = path.exists();
+pub trait ConfigLoader<'a, T = Self>
+where
+    Self: JsonSerializable<'a> + Default,
+{
+    fn init_default(config_path: &str) -> IOResult<()> {
+        let path = Path::new(config_path);
+        let config_exists = path.exists();
 
-    if config_exist {
-        return Err(IOError::new(
-            IOErrorKind::AlreadyExists,
-            format!("Config already exist in \"{}\"", config_path),
-        ));
+        if config_exists {
+            return Err(IOError::new(
+                IOErrorKind::AlreadyExists,
+                format!("Config already exist in \"{}\"", config_path),
+            ));
+        }
+
+        let default_config = Self::default().to_json();
+        write(path, default_config)
     }
 
-    let default_stations_config = BaseStationsConfig::default().to_json();
-    write(path, default_stations_config)
-}
+    fn load_config_json(config_path: &str) -> IOResult<String> {
+        let path = Path::new(config_path);
+        let config_exists = path.exists();
 
-pub fn load_stations_config(config_path: &str) -> IOResult<BaseStationsConfig> {
-    let path = Path::new(config_path);
-    let config_exist = path.exists();
+        if !config_exists {
+            return Err(IOError::new(
+                IOErrorKind::AddrNotAvailable,
+                format!("Cannot find \"{}\"", config_path),
+            ));
+        }
 
-    if !config_exist {
-        return Err(IOError::new(
-            IOErrorKind::AddrNotAvailable,
-            format!("Cannot find \"{}\"", config_path),
-        ));
-    }
-
-    let config_json = read_to_string(path)?;
-
-    match BaseStationsConfig::from_json(&config_json) {
-        Ok(config) => Ok(config),
-        Err(_) => Err(IOError::new(
-            IOErrorKind::InvalidData,
-            format!("Cannot parse \"{}\" to BaseStationsConfig", config_path),
-        )),
+        read_to_string(path)
     }
 }
 
-pub fn init_default_tracker_config(config_path: &str) -> IOResult<()> {
-    let path = Path::new(config_path);
-    let config_exist = path.exists();
+impl<'a> ConfigLoader<'a> for BaseStationsConfig {}
+impl<'a> ConfigLoader<'a> for TrackersConfig {}
+impl<'a> ConfigLoader<'a> for TrackersServerConfig {}
 
-    if config_exist {
-        return Err(IOError::new(
-            IOErrorKind::AlreadyExists,
-            format!("Config already exist in \"{}\"", config_path),
-        ));
-    }
-
-    let default_trackers_config = TrackersConfig::default().to_json();
-    write(path, default_trackers_config)
-}
-
-pub fn load_trackers_config(config_path: &str) -> IOResult<TrackersConfig> {
-    let path = Path::new(config_path);
-    let config_exist = path.exists();
-
-    if !config_exist {
-        return Err(IOError::new(
-            IOErrorKind::AddrNotAvailable,
-            format!("Cannot find \"{}\"", config_path),
-        ));
-    }
-
-    let config_json = read_to_string(path)?;
-
-    match TrackersConfig::from_json(&config_json) {
-        Ok(config) => Ok(config),
-        Err(_) => Err(IOError::new(
-            IOErrorKind::InvalidData,
-            format!("Cannot parse \"{}\" to TrackersConfig", config_path),
-        )),
-    }
-}
-
-pub fn init_configs(base_stations_config_path: &str, trackers_config_path: &str) -> IOResult<()> {
-    init_default_stations_config(base_stations_config_path)?;
-    init_default_tracker_config(trackers_config_path)
+pub fn init_configs(
+    base_stations_config_path: &str,
+    trackers_config_path: &str,
+    tracker_server_config_path: &str,
+) -> IOResult<()> {
+    BaseStationsConfig::init_default(base_stations_config_path)?;
+    TrackersConfig::init_default(trackers_config_path)?;
+    TrackersServerConfig::init_default(tracker_server_config_path)
 }
 
 pub fn load_configs(
     base_stations_config_path: &str,
     trackers_config_path: &str,
-) -> IOResult<(BaseStationsConfig, TrackersConfig)> {
-    let base_stations_config = load_stations_config(base_stations_config_path)?;
-    let trackers_config = load_trackers_config(trackers_config_path)?;
+    tracker_server_config_path: &str,
+) -> IOResult<(BaseStationsConfig, TrackersConfig, TrackersServerConfig)> {
+    let base_stations_config_json = BaseStationsConfig::load_config_json(base_stations_config_path)?;
+    let trackers_config_json = TrackersConfig::load_config_json(trackers_config_path)?;
+    let trackers_server_config_json = TrackersServerConfig::load_config_json(tracker_server_config_path)?;
+    let base_stations_config = BaseStationsConfig::from_json(&base_stations_config_json)?;
+    let trackers_config = TrackersConfig::from_json(&trackers_config_json)?;
+    let trackers_server_config = TrackersServerConfig::from_json(&trackers_server_config_json)?;
 
-    Ok((base_stations_config, trackers_config))
+    Ok((base_stations_config, trackers_config, trackers_server_config))
 }

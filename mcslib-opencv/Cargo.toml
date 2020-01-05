@@ -6,5 +6,5 @@ edition = "2018"
 
 [dependencies]
 once_cell = "1.2.0"
-opencv = {version = "0.29", default-features = false, features = ["opencv-34"]}
+opencv = { version = "0.29.0", default-features = false, features = ["opencv-34"] }
 mcslib-common = { path = "../mcslib-common"}
