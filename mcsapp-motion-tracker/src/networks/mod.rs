@@ -1,3 +1,3 @@
-mod device_receiver;
+mod data_receiver;
 
-pub use device_receiver::*;
+pub use data_receiver::*;

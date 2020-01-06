@@ -163,6 +163,10 @@ pub struct TrackersServerConfig {
     pub name: String,
     #[serde(rename = "IGServerType")]
     pub ig_server_type: ServerType,
+    #[serde(rename = "TrackersConfig")]
+    pub base_stations_config: BaseStationsConfig,
+    #[serde(rename = "TrackersConfig")]
+    pub trackers_config: TrackersConfig,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
@@ -458,7 +462,20 @@ impl Default for TrackerEndpoint {
 
 impl Default for TrackersConfig {
     fn default() -> TrackersConfig {
-        TrackersConfig(vec![TrackerEndpoint::default()])
+        TrackersConfig(vec![
+            TrackerEndpoint {
+                tracker_name: "HeadTracker".into(),
+                tracker_communication: TrackerCommunication::SerialPort(Default::default()),
+            },
+            TrackerEndpoint {
+                tracker_name: "ArmTracker".into(),
+                tracker_communication: TrackerCommunication::TCP("127.0.0.1:3000".parse().unwrap()),
+            },
+            TrackerEndpoint {
+                tracker_name: "FootTracker".into(),
+                tracker_communication: TrackerCommunication::UDP("127.0.0.1:2000".parse().unwrap()),
+            },
+        ])
     }
 }
 
@@ -467,6 +484,8 @@ impl Default for TrackersServerConfig {
         TrackersServerConfig {
             name: "Motion Tracker Server".into(),
             ig_server_type: Default::default(),
+            base_stations_config: Default::default(),
+            trackers_config: Default::default(),
         }
     }
 }

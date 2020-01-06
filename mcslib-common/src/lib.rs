@@ -2,6 +2,7 @@ pub extern crate bytes;
 pub extern crate chrono;
 pub extern crate env_logger;
 pub extern crate log;
+pub extern crate once_cell;
 pub extern crate serialport;
 
 pub use log::{debug, error, info, trace, warn};

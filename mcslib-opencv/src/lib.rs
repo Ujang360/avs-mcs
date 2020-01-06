@@ -2,7 +2,7 @@ pub extern crate opencv;
 
 pub mod motion_tracker_compute;
 
-use once_cell::unsync::OnceCell;
+use mcslib_common::once_cell::unsync::OnceCell;
 use opencv::core::{DataType, Mat, MatExpr, Point3d};
 use opencv::prelude::Vector;
 use opencv::types::VectorOfPoint3d;

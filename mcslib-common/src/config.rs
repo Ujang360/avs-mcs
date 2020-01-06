@@ -1,4 +1,4 @@
-use crate::types::{BaseStationsConfig, JsonSerializable, TrackersConfig, TrackersServerConfig};
+use crate::types::{JsonSerializable, TrackersServerConfig};
 use std::fs::{read_to_string, write};
 use std::io::{Error as IOError, ErrorKind as IOErrorKind, Result as IOResult};
 use std::path::Path;
@@ -37,28 +37,4 @@ pub trait ConfigLoader<T: for<'a> JsonSerializable<'a, T> + Default> {
     }
 }
 
-impl<'a> ConfigLoader<BaseStationsConfig> for BaseStationsConfig {}
-impl<'a> ConfigLoader<TrackersConfig> for TrackersConfig {}
 impl<'a> ConfigLoader<TrackersServerConfig> for TrackersServerConfig {}
-
-pub fn init_configs(
-    base_stations_config_path: &str,
-    trackers_config_path: &str,
-    tracker_server_config_path: &str,
-) -> IOResult<()> {
-    BaseStationsConfig::init_default(base_stations_config_path)?;
-    TrackersConfig::init_default(trackers_config_path)?;
-    TrackersServerConfig::init_default(tracker_server_config_path)
-}
-
-pub fn load_configs(
-    base_stations_config_path: &str,
-    trackers_config_path: &str,
-    tracker_server_config_path: &str,
-) -> IOResult<(BaseStationsConfig, TrackersConfig, TrackersServerConfig)> {
-    let base_stations_config = BaseStationsConfig::load_config(base_stations_config_path)?;
-    let trackers_config = TrackersConfig::load_config(trackers_config_path)?;
-    let trackers_server_config = TrackersServerConfig::load_config(tracker_server_config_path)?;
-
-    Ok((base_stations_config, trackers_config, trackers_server_config))
-}

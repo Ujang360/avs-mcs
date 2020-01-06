@@ -6,14 +6,17 @@ extern crate mcslib_common;
 
 mod networks;
 
-use mcslib_common::config::{init_configs, load_configs};
+use mcslib_common::config::ConfigLoader;
 use mcslib_common::init_log;
+use mcslib_common::once_cell::sync::Lazy;
+use mcslib_common::types::{JsonSerializable, TrackersServerConfig};
 use std::io::Result as IOResult;
 use std::panic::set_hook;
 
-const STATIONS_CONFIG_PATH: &str = "base-stations.config";
-const TRACKERS_CONFIG_PATH: &str = "motion-trackers.config";
 const APP_CONFIG_PATH: &str = "app.config";
+
+static APP_CONFIG: Lazy<TrackersServerConfig> =
+    Lazy::new(|| TrackersServerConfig::load_config(APP_CONFIG_PATH).unwrap());
 
 fn init_logging() {
     init_log(true);
@@ -24,11 +27,6 @@ fn init_logging() {
 
 fn main() -> IOResult<()> {
     init_logging();
-    let _ = init_configs(STATIONS_CONFIG_PATH, TRACKERS_CONFIG_PATH, APP_CONFIG_PATH);
-    let (base_stations_config, motion_trackers_config, app_config) =
-        load_configs(STATIONS_CONFIG_PATH, TRACKERS_CONFIG_PATH, APP_CONFIG_PATH)?;
-    debug!("{}", base_stations_config);
-    debug!("{}", motion_trackers_config);
-    debug!("{}", app_config);
+    debug!("{}", APP_CONFIG.to_json());
     Ok(())
 }
