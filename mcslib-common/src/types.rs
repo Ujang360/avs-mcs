@@ -152,12 +152,21 @@ pub struct TrackerEndpoint {
 pub struct TrackersConfig(pub Vec<TrackerEndpoint>);
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct EntityTrackers {
+    pub entity_name: String,
+    pub entity_trackers_name: Vec<String>,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct TrackersServerConfig {
     #[serde(rename = "ServerName")]
     pub name: String,
     #[serde(rename = "IGServerType")]
     pub ig_server_type: ServerType,
 }
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct EntityTrackersConfig(pub Vec<EntityTrackers>);
 
 impl Into<SPDataBits> for DataBits {
     fn into(self) -> SPDataBits {
@@ -231,6 +240,8 @@ impl JsonSerializable<'_> for TrackerCommunication {}
 impl JsonSerializable<'_> for TrackerEndpoint {}
 impl JsonSerializable<'_> for TrackersConfig {}
 impl JsonSerializable<'_> for TrackersServerConfig {}
+impl JsonSerializable<'_> for EntityTrackers {}
+impl JsonSerializable<'_> for EntityTrackersConfig {}
 
 impl Display for Baud {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
@@ -323,6 +334,18 @@ impl Display for TrackersConfig {
 }
 
 impl Display for TrackersServerConfig {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
+        write!(formatter, "{}", self.to_json())
+    }
+}
+
+impl Display for EntityTrackers {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
+        write!(formatter, "{}", self.to_json())
+    }
+}
+
+impl Display for EntityTrackersConfig {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> FormatterResult {
         write!(formatter, "{}", self.to_json())
     }
@@ -445,5 +468,20 @@ impl Default for TrackersServerConfig {
             name: "Motion Tracker Server".into(),
             ig_server_type: Default::default(),
         }
+    }
+}
+
+impl Default for EntityTrackers {
+    fn default() -> EntityTrackers {
+        EntityTrackers {
+            entity_name: Default::default(),
+            entity_trackers_name: vec![Default::default()],
+        }
+    }
+}
+
+impl Default for EntityTrackersConfig {
+    fn default() -> EntityTrackersConfig {
+        EntityTrackersConfig(vec![Default::default()])
     }
 }
