@@ -9,4 +9,4 @@ crossbeam-channel = "0.4.0"
 crossbeam-utils = "0.7.0"
 mcslib-common = { path = "../mcslib-common"}
 mcslib-opencv = { path = "../mcslib-opencv"}
-mimalloc = { version = "0.1.11", default-features = false }
+mimalloc = { version = "0.1.39", default-features = false }
